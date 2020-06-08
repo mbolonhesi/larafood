@@ -34,8 +34,9 @@
                     @foreach ($permissions as $permission)
                     <tr>
                         <td>{{ $permission->name }}</td>                        
-                        <td>                            
-                            <a href="{{ route('profiles.edit', $profile->id) }}" class="btn btn-info"><i class="far fa-edit"></i></a>                           
+                        <td>                                                        
+                            <a href="{{ route('profiles.permissions.detach', [$profile->id,$permission->id]) }}" class="btn btn-info"><i class="fas fa-trash"></i></a>
+                            
                         </td>
                     </tr>
                     @endforeach

@@ -38,6 +38,7 @@
                             <a href="{{ route('details.plan.index', $plan->url) }}" class="btn btn-primary"><i class="fas fa-info"></i> </a>
                             <a href="{{ route('plans.edit', $plan->url) }}" class="btn btn-info"><i class="far fa-edit"></i></a>
                             <a href="{{ route('plans.show', $plan->url) }}" class="btn btn-warning"><i class="far fa-eye"></i></a>
+                            <a href="{{ route('plans.profiles', $plan->id) }}" class="btn btn-warning"><i class="fas fa-list-ul"></i></a>
                         </td>
                     </tr>
                     @endforeach

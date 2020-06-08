@@ -16,18 +16,29 @@ Route::prefix('admin')
     ->namespace('Admin')
     ->group(function() {
         /*
+         * Plan x Profile
+         */
+        Route::get('plans/{id}/profiles/{idPermission}/detach','ACL\PlanProfileController@detachPlanProfile')->name('plans.profiles.detach');             
+        Route::post('plans/{id}/profiles','ACL\PlanProfileController@attachPlanProfile')->name('plans.profiles.attach');                
+        Route::any('plans/{id}/profiles/create','ACL\PlanProfileController@profilesAvailable')->name('plans.profiles.available');               
+        Route::get('plans/{id}/profiles','ACL\PlanProfileController@profiles')->name('plans.profiles');  
+        Route::get('profiles/{id}/plans','ACL\PlanProfileController@plans')->name('profiles.plans'); 
+        /*
          * Permissions x Profile
          */
-        Route::get('profiles/{id}/permissions/create','ACL\PermissionProfileController@permissionsAvailable')->name('profiles.permissions.available');        
+        Route::get('profiles/{id}/permissions/{idPermission}/detach','ACL\PermissionProfileController@detachPermissionsProfile')->name('profiles.permissions.detach');             
+        Route::post('profiles/{id}/permissions','ACL\PermissionProfileController@attachPermissionsProfile')->name('profiles.permissions.attach');                
+        Route::any('profiles/{id}/permissions/create','ACL\PermissionProfileController@permissionsAvailable')->name('profiles.permissions.available');        
         Route::get('profiles/{id}/permissions','ACL\PermissionProfileController@permissions')->name('profiles.permissions');  
         /*
          * Routes Permissions
-         */
+         */        
+        Route::get('permissions/{id}/profiles','ACL\PermissionController@profiles')->name('permissions.profiles');
         Route::any('permissions/search','ACL\PermissionController@search')->name('permissions.search');
         Route::resource('permissions','ACL\PermissionController');
         /*
          * Routes Profiles
-         */
+         */        
         Route::any('profiles/search','ACL\ProfileController@search')->name('profiles.search');
         Route::resource('profiles','ACL\ProfileController');
         /*

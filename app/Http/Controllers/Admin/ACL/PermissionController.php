@@ -6,14 +6,17 @@ use App\Http\Requests\StoreUpdatePermission;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Permission;
+use App\Models\Profile;
 
 class PermissionController extends Controller
 {
     protected $repository;
+    protected $profiles;
 
-    public function __construct(Permission $permission)
+    public function __construct(Permission $permission, Profile $profiles)
     {
         $this->repository = $permission;
+        $this->profiles = $profiles;
     }
     /**
      * Display a listing of the resource.
@@ -140,5 +143,19 @@ class PermissionController extends Controller
             'permissions' => $permissions,
             'filters' => $filters,
         ]);
-    }   
+    } 
+    
+    public function profiles($idPermission)
+    {
+
+        if (!$permission = $this->repository->find($idPermission)){
+            return redirect()->back();
+        }        
+        $profiles = $permission->profiles()->paginate();        
+
+        return view('admin.pages.permissions.profiles',[
+            'profiles' => $profiles,            
+            'permission' => $permission, 
+        ]);
+    }
 }

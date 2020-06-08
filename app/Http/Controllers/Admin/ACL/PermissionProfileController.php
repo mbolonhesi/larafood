@@ -18,8 +18,8 @@ class PermissionProfileController extends Controller
     }
 
     public function permissions($idProfile)
-    {
-        $profile = $this->profile->with('permissions')->find($idProfile);
+    {               
+       $profile = $this->profile->with('permissions')->find($idProfile);
         if (!$profile){
             return redirect()->back();
         }
@@ -30,6 +30,56 @@ class PermissionProfileController extends Controller
             'profile' => $profile,
             'permissions' => $permissions,
         ]);
+    
 
     }
+
+    public function permissionsAvailable(Request $request, $idProfile)
+    {
+        $profile = $this->profile->with('permissions')->find($idProfile);
+        if (!$profile){
+            return redirect()->back();
+        }
+
+        $filters = $request->except('_token');
+        
+        $permissions = $profile->permissionsAvailable($request->filter);
+
+        return view('admin.pages.profiles.permissions.available',[
+            'profile' => $profile,
+            'permissions' => $permissions,
+            'filters' => $filters,
+        ]);
+
+    }
+
+    public function attachPermissionsProfile(Request $request, $idProfile)
+    {
+        $profile = $this->profile->with('permissions')->find($idProfile);
+        if (!$profile){
+            return redirect()->back();
+        }
+        if (!$request->permissions || count($request->permissions)==0){
+            return redirect()
+                ->back()
+                ->with('info','Precisa selecionar pelo menos uma permissão.');
+        }
+        $profile->permissions()->attach($request->permissions);
+        return redirect()->route('profiles.permissions',$profile->id);
+
+    }
+
+    public function detachPermissionsProfile($idProfile,$idPermission)
+    {
+        $profile = $this->profile->find($idProfile);
+        $permission = $this->permission->find($idPermission);
+        if (!$profile || !$permission){
+            return redirect()->back();
+        }
+        
+        $profile->permissions()->detach($permission);
+        return redirect()->route('profiles.permissions',$profile->id);
+
+    }
+
 }
