@@ -14,7 +14,13 @@ use Illuminate\Support\Facades\Route;
 */
 Route::prefix('admin')
     ->namespace('Admin')
+    ->middleware('auth')
     ->group(function() {
+        /*
+         * Routes Users
+         */        
+        Route::any('users/search','UserController@search')->name('users.search');
+        Route::resource('users','UserController');
         /*
          * Plan x Profile
          */
@@ -68,8 +74,16 @@ Route::prefix('admin')
         Route::get('/','PlanController@index')->name('admin.index');
 });
 
+/*
+ * Sites
+ */
+Route::get('/plan/{url}', 'Site\SiteController@plan')->name('plan.subscription');
+Route::get('/', 'Site\SiteController@index')->name('site.home');
+
+/*
+ * Auth Routes
+ */
+Auth::routes();
+//Auth::routes(['register' => false]); //remover opção de registrar usuários
 
 
-Route::get('/', function () {
-    return view('welcome');
-});

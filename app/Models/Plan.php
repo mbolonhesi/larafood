@@ -15,6 +15,11 @@ class Plan extends Model
     public function profiles(){
         return $this->belongsToMany(Profile::class); //faz um relacionamento com a tabela profile, id (plans) -> plan_id (plan_profile)
     }
+
+    public function tenants()
+    {
+       return $this->hasMany(Tenant::class);
+    }
     
     public function search($filter = null){
 

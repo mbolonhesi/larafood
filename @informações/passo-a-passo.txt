@@ -1,0 +1,4 @@
+1 - instalar laravel pelo composer (site laravel)
+2 - instalar laravel/ui (autenticação de usuários, site laravel)
+3 - instalar jeroennoten/laravel-adminlte ( https://github.com/jeroennoten/Laravel-AdminLTE )
+4 - instalar laravel-debugbar ( https://github.com/barryvdh/laravel-debugbar )
