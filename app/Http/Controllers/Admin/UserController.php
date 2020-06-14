@@ -13,7 +13,7 @@ class UserController extends Controller
 
     public function __construct(User $user)
     {
-        $this->repository = $profile;
+        $this->repository = $user;
     }
     /**
      * Display a listing of the resource.
@@ -22,7 +22,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = $this->repository->paginate();
+        $users = $this->repository->latest()->tenantUser()->paginate();
 
         return view('admin.pages.users.index',[
             'users' => $users,
@@ -49,6 +49,7 @@ class UserController extends Controller
     {                
         $data = $request->all();
         $data['tenant_id'] = auth()->user()->tenant_id;
+        $data['password'] = bcrypt($data['password']); //encrypt password
 
         $this->repository->create($data);
         return redirect()->route('users.index');
@@ -62,11 +63,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $profile = $this->repository->where('id', $id)->first();
-        if (!$profile)
+        $user = $this->repository->tenantUser()->find($id);
+        if (!$user)
             return redirect()->back();
         return view('admin.pages.users.show', [
-            'profile' => $profile
+            'user' => $user
         ]);
     }
 
@@ -78,11 +79,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-       if (!$profile = $this->repository->find($id)){
+       if (!$user = $this->repository->tenantUser()->find($id)){
            return redirect()->back();
        }
        return view('admin.pages.users.edit',[
-           'profile' => $profile,
+           'user' => $user,
        ]);
     }
 
@@ -95,10 +96,16 @@ class UserController extends Controller
      */
     public function update(StoreUpdateUser $request, $id)
     {
-        if (!$profile = $this->repository->find($id)){
+        if (!$user = $this->repository->tenantUser()->find($id)){
             return redirect()->back();
+        }        
+
+        $data = $request->only(['name','email']);
+        if ($request->password){
+            $data['password'] = bcrypt($request->password); //encrypt password
         }
-        $profile->update($request->all());
+
+        $user->update($data);
         return redirect()->route('users.index');
 
     }
@@ -111,11 +118,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $profile = $this->repository->where('id', $id)->first();
-        if (!$profile)
+        $user = $this->repository->tenantUser()->where('id', $id)->first();
+        if (!$user)
             return redirect()->back();
        
-        $profile->delete();
+        $user->delete();
         return redirect()->route('users.index');
     }
 
@@ -137,6 +144,8 @@ class UserController extends Controller
                                     $query->orWhere('email',$request->filter);
                                 }                                
                             })
+                            ->latest()
+                            ->tenantUser()
                             ->paginate();
 
         return view('admin.pages.users.index',[

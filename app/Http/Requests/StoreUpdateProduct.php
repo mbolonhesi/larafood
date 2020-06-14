@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use PHPUnit\Framework\Constraint\IsTrue;
 
-class StoreUpdateUser extends FormRequest
+class StoreUpdateProduct extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,17 +23,20 @@ class StoreUpdateUser extends FormRequest
      */
     public function rules()
     {
-        $id = $this->segment(3); //3 campo na url
-
+        $id = $this->segment(3);
         $rules = [
-            'name' => ['required', 'string','min:3','max:255'],
-            'email' => ['required', 'string', 'email','min:3', 'max:255', "unique:users,email,{$id},id"],
-            'password' => ['required', 'string','min:6', 'max:16'],
+            'title' => ['required','min:3','max:255',"unique:products,title,{$id},id"],
+            'description' => ['required', 'string','min:3','max:500'],
+            'image' => ['required', 'image'],
+            'price' => "required|regex:/^\d+(\.\d{1,2})?$/",
         ];
+
+
         if ($this->method() == 'PUT'){
-            $rules['password'] = ['nullable', 'string','min:6', 'max:16'];
+            $rules['image'] = ['nullable', 'image'];
         }
 
         return $rules;
+
     }
 }
