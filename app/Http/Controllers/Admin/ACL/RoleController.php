@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Admin\ACL;
 
-use App\Http\Requests\StoreUpdateProfile;
 use App\Http\Controllers\Controller;
-use App\Models\Profile;
+use App\Http\Requests\StoreUpdateRole;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
-class ProfileController extends Controller
+class RoleController extends Controller
 {
     protected $repository;
 
-    public function __construct(Profile $profile)
+    public function __construct(Role $role)
     {
-        $this->repository = $profile;
-        $this->middleware(['can:profiles']);
+        $this->repository = $role;
+        $this->middleware(['can:roles']);
     }
     /**
      * Display a listing of the resource.
@@ -23,10 +23,10 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $profiles = $this->repository->paginate();
+        $roles = $this->repository->paginate();
 
-        return view('admin.pages.profiles.index',[
-            'profiles' => $profiles,
+        return view('admin.pages.roles.index',[
+            'roles' => $roles,
         ]);
     }
 
@@ -37,19 +37,19 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        return view('admin.pages.profiles.create');
+        return view('admin.pages.roles.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  App\Http\Requests\StoreUpdateProfile  $request
+     * @param  App\Http\Requests\StoreUpdateRole  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreUpdateProfile $request)
+    public function store(StoreUpdateRole $request)
     {
         $this->repository->create($request->all());
-        return redirect()->route('profiles.index');
+        return redirect()->route('roles.index');
     }
 
     /**
@@ -60,11 +60,11 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        $profile = $this->repository->where('id', $id)->first();
-        if (!$profile)
+        $role = $this->repository->where('id', $id)->first();
+        if (!$role)
             return redirect()->back();
-        return view('admin.pages.profiles.show', [
-            'profile' => $profile
+        return view('admin.pages.roles.show', [
+            'role' => $role
         ]);
     }
 
@@ -76,28 +76,28 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-       if (!$profile = $this->repository->find($id)){
+       if (!$role = $this->repository->find($id)){
            return redirect()->back();
        }
-       return view('admin.pages.profiles.edit',[
-           'profile' => $profile,
+       return view('admin.pages.roles.edit',[
+           'role' => $role,
        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\StoreUpdateProfile  $request
+     * @param  App\Http\Requests\StoreUpdateRole  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreUpdateProfile $request, $id)
+    public function update(StoreUpdateRole $request, $id)
     {
-        if (!$profile = $this->repository->find($id)){
+        if (!$role = $this->repository->find($id)){
             return redirect()->back();
         }
-        $profile->update($request->all());
-        return redirect()->route('profiles.index');
+        $role->update($request->all());
+        return redirect()->route('roles.index');
 
     }
 
@@ -109,12 +109,12 @@ class ProfileController extends Controller
      */
     public function destroy($id)
     {
-        $profile = $this->repository->where('id', $id)->first();
-        if (!$profile)
+        $role = $this->repository->where('id', $id)->first();
+        if (!$role)
             return redirect()->back();
        
-        $profile->delete();
-        return redirect()->route('profiles.index');
+        $role->delete();
+        return redirect()->route('roles.index');
     }
 
 
@@ -128,7 +128,7 @@ class ProfileController extends Controller
     {
         $filters = $request->only('filter');
 
-        $profiles = $this->repository
+        $roles = $this->repository
                             ->where(function($query) use ($request){
                                 if ($request->filter){
                                     $query->where('name',$request->filter);
@@ -137,8 +137,8 @@ class ProfileController extends Controller
                             })
                             ->paginate();
 
-        return view('admin.pages.profiles.index',[
-            'profiles' => $profiles,
+        return view('admin.pages.roles.index',[
+            'roles' => $roles,
             'filters' => $filters,
         ]);
     }

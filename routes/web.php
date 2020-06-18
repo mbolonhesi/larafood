@@ -16,10 +16,15 @@ Route::prefix('admin')
     ->namespace('Admin')
     ->middleware('auth')
     ->group(function() {
+       
         Route::get('test-acl',function() {
             dd(auth()->user()->permissions());
         });
-
+        /*
+         * Routes Tenants
+         */        
+        Route::any('tenants/search','TenantController@search')->name('tenants.search');
+        Route::resource('tenants','TenantController');
         /*
          * Routes Tables
          */        

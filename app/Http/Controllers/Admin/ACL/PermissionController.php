@@ -17,6 +17,7 @@ class PermissionController extends Controller
     {
         $this->repository = $permission;
         $this->profiles = $profiles;
+        $this->middleware(['can:permissions']);
     }
     /**
      * Display a listing of the resource.
