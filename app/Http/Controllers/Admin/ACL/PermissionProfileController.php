@@ -32,7 +32,16 @@ class PermissionProfileController extends Controller
             'permissions' => $permissions,
         ]);
     
+    }
+    public function profiles($idPermission)
+    {
+        if (!$permission = $this->permission->find($idPermission)) {
+            return redirect()->back();
+        }
 
+        $profiles = $permission->profiles()->paginate();
+
+        return view('admin.pages.permissions.profiles.profiles', compact('permission', 'profiles'));
     }
 
     public function permissionsAvailable(Request $request, $idProfile)

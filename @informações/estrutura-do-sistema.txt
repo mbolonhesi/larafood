@@ -1,0 +1,23 @@
+User: Maurilio
+	Tenant: MX Bolonhesi (empresa)
+		Plan: Businers
+			Profile: Financeiro
+				permission: fin_view
+				permission: fin_cad
+				permission: fin_view
+			Profile: Produtos
+				permission: prod_view
+				permission: prod_cad
+				permission: prod_view
+			Profile: Peridos
+				permission: pedidos
+
+---------------------------------
+User: Carlos Ferreira
+	Roles: Financeiro
+	Roles: Admin
+		permission: fin_view
+		permission: fin_cad
+	Roles: Editor
+		permission: prod_view
+		permission: prod_cad

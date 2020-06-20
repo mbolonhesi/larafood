@@ -20,7 +20,7 @@ class PlanProfileController extends Controller
 
     public function profiles($idPlan)
     {                      
-        if (!$plan = $this->plan->with('profiles')->find($idPlan)){
+        if (!$plan = $this->plan->find($idPlan)){
             return redirect()->back();
         }
 

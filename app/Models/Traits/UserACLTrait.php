@@ -1,23 +1,55 @@
 <?php 
  namespace App\Models\Traits;
 
+use App\Models\Tenant;
 
 /**
   * 
   */
  trait UserACLTrait
  {
-     public function permissions(){
-         $tenant = $this->tenant()->first();
-         $plan = $tenant->plan()->first();
+     public function permissions():array //PERMISSOES DOS USUÁRIOS (PLANO x CARGO)
+     {       
+        $permissionsPlan = $this->permissionsPlan();
+        $permissionsRole = $this->permissionsRole();
 
-         $permissions=[];
-        foreach ($plan->profiles as $profile){
-            foreach ($profile->permissions as $permission){
-                array_push($permissions,$permission->name);
+        $permissions=[];
+        foreach ($permissionsRole as $permission){
+            if (in_array($permission,$permissionsPlan)){
+                array_push($permissions,$permission);
             }
         }
         return $permissions;
+     }
+
+     public function PermissionsPlan():array //método que retorna todas as permissoes do plano
+     {
+        //$tenant = $this->tenant()->first();
+        //$plan = $tenant->plan()->first();
+        $tenant = Tenant::with('plan.profiles.permissions')->where('id',$this->tenant_id)->first();
+
+        $plan = $tenant->plan;
+
+        $permissions=[];
+       foreach ($plan->profiles as $profile){
+           foreach ($profile->permissions as $permission){
+               array_push($permissions,$permission->name);
+           }
+       }
+       return $permissions;
+     }
+
+     public function permissionsRole():array //metodo retorna todas as permissoes do cargo
+     {
+        $roles = $this->roles()->with('permissions')->get();
+
+        $permissions=[];
+        foreach ($roles as $role){
+            foreach ($roles->permissions as $permission){
+                array_push($permissions,$permission->name);
+            }
+        }           
+       return $permissions;
      }
 
      public function hasPermission(string $permissionName):bool{
