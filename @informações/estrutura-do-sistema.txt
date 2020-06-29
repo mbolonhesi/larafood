@@ -21,3 +21,12 @@ User: Carlos Ferreira
 	Roles: Editor
 		permission: prod_view
 		permission: prod_cad
+------------------------------
+estrutura do APP
+
+Routes/Api.php (rotas do app)
+Controllers
+	Form Requests       (utilizado para validaçoes)
+	Resources           (retornar os dados, no lugar de json)
+	Services Layers     (logica da aplicação, no lugar dos controllers)
+	Repositories        (dados, no lugar de models)
