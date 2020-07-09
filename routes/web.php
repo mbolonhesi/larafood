@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,14 +13,16 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('teste', function(){
+    $client = Client::first();
+    $token = $client->createToken('token-teste');
+    dd($token->plainTextToken);
+});
 Route::prefix('admin')
     ->namespace('Admin')
     ->middleware('auth')
     ->group(function() {
        
-        Route::get('test-acl',function() {
-            dd(auth()->user()->permissions());
-        });
          /**
          * Role x User
          */
