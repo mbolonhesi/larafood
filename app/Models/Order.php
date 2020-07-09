@@ -8,27 +8,31 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use TenantTrait;
-  
-    protected $fillable = ['tenant_id','identify','client_id','table_id','total','status','comment'];
-    
-    public function tenant(){
+
+    protected $fillable = ['tenant_id', 'identify', 'client_id', 'table_id', 'total', 'status', 'comment'];
+
+    public function tenant()
+    {
         return $this->belongsTo(Tenant::class);
     }
 
-    public function client(){
+    public function client()
+    {
         return $this->belongsTo(Client::class);
     }
 
-    public function table(){
+    public function table()
+    {
         return $this->belongsTo(Table::class);
     }
 
-    public function products(){
+    public function products()
+    {
         return $this->belongsToMany(Product::class);
     }
 
-    public function evaluations(){
+    public function evaluations()
+    {
         return $this->hasMany(Evaluation::class);
     }
-   
 }

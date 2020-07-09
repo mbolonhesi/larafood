@@ -53,12 +53,12 @@ class RepositoryServiceProvider extends ServiceProvider
         );
         $this->app->bind(
             OrderRepositoryInterface::class,
-            OrderRepository::class,
+            OrderRepository::class
         );
 
         $this->app->bind(
             EvaluationRepositoryInterface::class,
-            EvaluationRepository::class,
+            EvaluationRepository::class
         );
     }
 

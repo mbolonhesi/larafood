@@ -1,40 +1,40 @@
-<?php 
+<?php
+
 namespace App\Services;
 
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\TableRepositoryInterface;
 use App\Repositories\Contracts\TenantRepositoryInterface;
+use Illuminate\Http\Request;
 
 class OrderService
 {
-    protected $orderRepository, $tenantRepository, $tableRepository,$productRepository;
+    protected $orderRepository, $tenantRepository, $tableRepository, $productRepository;
 
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         TenantRepositoryInterface $tenantRepository,
         TableRepositoryInterface $tableRepository,
         ProductRepositoryInterface $productRepository
-    ){
-      $this->orderRepository = $orderRepository;
-      $this->tenantRepository = $tenantRepository;
-      $this->tableRepository = $tableRepository;
-      $this->productRepository = $productRepository;
+    ) {
+        $this->orderRepository = $orderRepository;
+        $this->tenantRepository = $tenantRepository;
+        $this->tableRepository = $tableRepository;
+        $this->productRepository = $productRepository;
     }
+
     public function ordersByClient()
     {
-
         $idClient = $this->getClientIdByOrder();
 
         return $this->orderRepository->getOrdersByClientId($idClient);
-
     }
 
     public function getOrderByIdentify(string $identify)
     {
         return $this->orderRepository->getOrderByIdentify($identify);
     }
-
 
     public function createNewOrder(array $order)
     {
@@ -63,6 +63,27 @@ class OrderService
         return $order;
     }
 
+    private function getIdentifyOrder(int $qtyCaraceters = 8)
+    {
+        $smallLetters = str_shuffle('abcdefghijklmnopqrstuvwxyz');
+
+        $numbers = (((date('Ymd') / 12) * 24) + mt_rand(800, 9999));
+        $numbers .= 1234567890;
+
+        // $specialCharacters = str_shuffle('!@#$%*-');
+
+        // $characters = $smallLetters.$numbers.$specialCharacters;
+        $characters = $smallLetters.$numbers;
+
+        $identify = substr(str_shuffle($characters), 0, $qtyCaraceters);
+
+        if ($this->orderRepository->getOrderByIdentify($identify)) {
+            $this->getIdentifyOrder($qtyCaraceters + 1);
+        }
+
+        return $identify;
+    }
+
     private function getProductsByOrder(array $productsOrder): array
     {
         $products = [];
@@ -79,28 +100,7 @@ class OrderService
         return $products;
     }
 
-
-    private function getIdentifyOrder(int $qtyCaracteres = 8){
-        $smallLetters = str_shuffle('abcdefghijklmnopqrstuvwxyz');
-
-        $numbers = (((date('Ymd') / 12) * 24) + mt_rand(800, 9999));
-        $numbers .= 1234567890;
-
-        // $specialCharacters = str_shuffle('!@#$%*-');
-
-        // $characters = $smallLetters.$numbers.$specialCharacters;
-        $characters = $smallLetters.$numbers;
-
-        $identify = substr(str_shuffle($characters), 0, $qtyCaracteres);
-
-        if ($this->orderRepository->getOrderByIdentify($identify)) {
-            $this->getIdentifyOrder($qtyCaracteres + 1);
-        }
-
-        return $identify;
-    }
-
-    private function getTotalOrder(array $products):float
+    private function getTotalOrder(array $products): float
     {
         $total = 0;
 
@@ -133,6 +133,5 @@ class OrderService
     {
         return auth()->check() ? auth()->user()->id : '';
     }
-
 
 }
